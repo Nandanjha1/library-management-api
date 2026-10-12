@@ -184,7 +184,7 @@ Install the following before running the project:
 Replace the placeholder with your actual repository URL.
 
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
+git clone https://github.com/Nandanjha1/library-management-api.git
 cd library-management-api
 ```
 
@@ -432,6 +432,13 @@ Use test accounts and local test data. Never include real credentials or live se
 - Add continuous integration to run tests and frontend builds on each change.
 - Add deployment instructions for a production server and managed PostgreSQL instance.
 
-## License
 
-No license is specified here. Add an appropriate license file before distributing the project publicly.
+🎥 Demonstration
+A complete project walkthrough demonstrating the major features and application flow is available in the Loom demo.
+
+Demo: https://www.loom.com/share/b18151ae720d472884f44f56102058fd
+
+👨‍💻 Author
+Nandan Kumar
+
+Developer Intern — Nestorbird
