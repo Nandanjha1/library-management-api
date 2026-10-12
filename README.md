@@ -436,7 +436,7 @@ Use test accounts and local test data. Never include real credentials or live se
 🎥 Demonstration
 A complete project walkthrough demonstrating the major features and application flow is available in the Loom demo.
 
-Demo: https://www.loom.com/share/b18151ae720d472884f44f56102058fd
+Demo: https://www.loom.com/share/a1da18aebe21447f860a0dbe7eeb7cc1
 
 👨‍💻 Author
 Nandan Kumar
