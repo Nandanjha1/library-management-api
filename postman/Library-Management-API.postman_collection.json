@@ -1,0 +1,245 @@
+
+{
+  "info": {
+    "name": "Library Management API",
+    "description": "Postman collection for member, librarian, book, loan, fine, report and partner API testing.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://127.0.0.1:8000" },
+    { "key": "member_token", "value": "" },
+    { "key": "member_id", "value": "" },
+    { "key": "book_id", "value": "1" },
+    { "key": "copy_id", "value": "1" },
+    { "key": "loan_id", "value": "" },
+    { "key": "fine_id", "value": "" },
+    { "key": "partner_api_key", "value": "" },
+    { "key": "partner_api_secret", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "API Health",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/health"
+          }
+        },
+        {
+          "name": "Database Health",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/health/db"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Books",
+      "item": [
+        {
+          "name": "List Books",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/books?limit=10&offset=0"
+          }
+        },
+        {
+          "name": "Search Books",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/books?search=Python&limit=10&offset=0"
+          }
+        },
+        {
+          "name": "Get Book by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/books/{{book_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Member Authentication",
+      "item": [
+        {
+          "name": "Register Member",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Demo Member\",\n  \"email\": \"demo.member@example.com\",\n  \"password\": \"ChangeThisPassword123!\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/auth/member/register"
+          }
+        },
+        {
+          "name": "Member Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Login successful', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "const data = pm.response.json();",
+                  "if (data.access_token) {",
+                  "    pm.collectionVariables.set('member_token', data.access_token);",
+                  "}",
+                  "if (data.member && data.member.member_id) {",
+                  "    pm.collectionVariables.set('member_id', String(data.member.member_id));",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"demo.member@example.com\",\n  \"password\": \"ChangeThisPassword123!\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/auth/member/login"
+          }
+        },
+        {
+          "name": "My Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{member_token}}" }
+            ],
+            "url": "{{base_url}}/members/me"
+          }
+        },
+        {
+          "name": "My Loans",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{member_token}}" }
+            ],
+            "url": "{{base_url}}/members/me/loans"
+          }
+        },
+        {
+          "name": "My Fines",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{member_token}}" }
+            ],
+            "url": "{{base_url}}/fines/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Librarian",
+      "item": [
+        {
+          "name": "Librarian Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"YOUR_SEEDED_STAFF_EMAIL\",\n  \"password\": \"YOUR_STAFF_PASSWORD\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/auth/librarian/login"
+          }
+        },
+        {
+          "name": "Checkout Book",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"member_id\": 1,\n  \"copy_id\": 1,\n  \"due_date\": \"2026-11-01T18:00:00Z\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/loans"
+          }
+        },
+        {
+          "name": "Return Book",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/loans/{{loan_id}}/return"
+          }
+        },
+        {
+          "name": "Record Desk Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": \"10.00\",\n  \"payment_method\": \"cash\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/fines/{{fine_id}}/record-payment"
+          }
+        },
+        {
+          "name": "Overdue Report",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/reports/overdue"
+          }
+        },
+        {
+          "name": "Most Borrowed Books",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/reports/most-borrowed?limit=10"
+          }
+        },
+        {
+          "name": "Librarian Logout",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/librarian/logout"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Partner Catalogue",
+      "item": [
+        {
+          "name": "Partner List Books",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "X-API-Key", "value": "{{partner_api_key}}" },
+              { "key": "X-API-Secret", "value": "{{partner_api_secret}}" }
+            ],
+            "url": "{{base_url}}/partner/catalogue/books"
+          }
+        }
+      ]
+    }
+  ]
+}
